@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Lock Extravaganza</title>
+
+<style>
+/* ---------------------------------------------------- RESET ---------------------------------------------------- */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Arial', sans-serif;
+}
+body{
+  background:black;
+  overflow-x:hidden;
+  color:#ff0000;
+}
+
+/* ----------------------------------------------- VIDEO DE FONDO ----------------------------------------------- */
+#video-bg{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:-3;
+  filter:brightness(0.3) saturate(2) contrast(1.5) hue-rotate(-20deg);
+}
+
+/* ------------------------------------------------- PANTALLA DE CARGA ------------------------------------------------- */
+#loader-screen{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+  z-index:9999;
+}
+
+.loader-bar{
+  width:80%;
+  height:12px;
+  background:#330000;
+  border:2px solid #ff0000;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 15px #ff0000;
+}
+
+.loader-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg, #ff0000, #ff4444, #ff0000);
+  animation:fillLoad 3s forwards;
+}
+
+@keyframes fillLoad{
+  from{width:0;}
+  to{width:100%;}
+}
+
+#loader-percent{
+  font-size:22px;
+  color:#ff4444;
+  text-shadow:0 0 10px #ff0000;
+  font-weight:bold;
+  animation:fade 1.2s infinite alternate;
+}
+
+@keyframes fade {
+  from { opacity:0.4; }
+  to { opacity:1; }
+}
+
+/* ---------------------------------------------------- CONTENEDOR ---------------------------------------------------- */
+.container{
+  padding:120px 20px 40px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* -------------------------------------------------- FICHA -------------------------------------------------- */
+.ficha-card{
+  width:90%;
+  max-width:650px;
+  border:3px solid #ff0000;
+  background:rgba(0,0,0,0.7);
+  padding:25px;
+  box-shadow:0 0 30px #ff0000, 0 0 60px #ff0000;
+  backdrop-filter:blur(4px);
+  animation:neonPulse 2s infinite alternate;
+  margin-bottom:40px;
+}
+
+@keyframes neonPulse{
+  0%{ box-shadow:0 0 25px #ff0000, 0 0 40px #ff0000; }
+  100%{ box-shadow:0 0 45px #ff0000, 0 0 90px #ff0000; }
+}
+
+.ficha-card img{
+  width:60%;
+  border:3px solid #ff0000;
+  margin-bottom:15px;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* -------------------------------------------------- BLOQUE TITULO -------------------------------------------------- */
+.ficha-title{
+  text-align:center;
+  color:#ff0000;
+  text-shadow:0 0 10px #ff0000;
+  font-size:20px;
+  margin-bottom:10px;
+}
+
+.ficha-info{
+  text-align:center;
+  color:#ff6666;
+  margin-bottom:25px;
+  line-height:1.4;
+}
+
+/* -------------------------------------------------- STATS -------------------------------------------------- */
+.stat{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:12px 0;
+}
+
+.stat span{
+  width:90px;
+  font-weight:bold;
+  color:#ff0000;
+}
+
+.bar{
+  flex:1;
+  height:12px;
+  background:#330000;
+  border:2px solid #ff0000;
+  border-radius:3px;
+  overflow:hidden;
+}
+
+.fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#ff0000,#ff4444,#ff0000);
+  animation:fillBar 2s forwards ease-out;
+  box-shadow:0 0 10px #ff0000 inset;
+}
+
+@keyframes fillBar{
+  from{width:0;}
+  to{width:calc(var(--value) * 1%);}
+}
+
+.num{
+  width:40px;
+  text-align:right;
+  color:#ff6666;
+}
+
+/* -------------------------------------------------- BOTON MUSICA -------------------------------------------------- */
+.music-btn{
+  background:black;
+  color:#ff0000;
+  border:2px solid #ff0000;
+  padding:12px 25px;
+  cursor:pointer;
+  font-size:16px;
+  margin-bottom:40px;
+  transition:0.3s;
+  box-shadow:0 0 10px #ff0000;
+}
+
+.music-btn:hover{
+  background:#ff0000;
+  color:black;
+}
+
+/* -------------------------------------------------- COLUMNAS -------------------------------------------------- */
+.columns{
+  display:flex;
+  flex-wrap:wrap;
+  gap:25px;
+  justify-content:center;
+  width:100%;
+  max-width:1200px;
+  margin-top:35px;
+}
+
+.column{
+  flex:1 1 300px;
+  background:rgba(0,0,0,0.6);
+  border:2px solid #ff0000;
+  padding:15px;
+  text-align:center;
+  box-shadow:0 0 20px #ff0000;
+  transition:transform 0.3s, box-shadow 0.3s;
+  white-space:pre-line; /* 🔥 RESPETA ESPACIOS Y SALTOS */
+}
+
+.column:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 40px #ff0000;
+}
+
+.column img{
+  width:100%;
+  max-width:300px;
+  border:2px solid #ff0000;
+  margin-bottom:10px;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.column h3{
+  color:#ff4444;
+  margin-bottom:10px;
+  text-align:center;  /* 🔥 TITULO CENTRADO */
+}
+
+.column p{
+  color:#ff7777;
+  text-align:center;  /* 🔥 TEXTO CENTRADO */
+  white-space:pre-line;  /* 🔥 RESPETA ESPACIOS */
+}
+
+/* -------------------------------------------------- RESPONSIVE -------------------------------------------------- */
+@media(max-width:768px){
+  .container{ padding-top:150px; }
+  .ficha-title{ font-size:18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ------------------------------------------------ VIDEO DE FONDO ------------------------------------------------ -->
+<video id="video-bg" autoplay muted loop>
+  <source src="fondo.mp4" type="video/mp4">
+</video>
+
+<!-- ------------------------------------------------ PANTALLA DE CARGA ------------------------------------------------ -->
+<div id="loader-screen">
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <div id="loader-percent">0%</div>
+</div>
+
+<div class="container">
+
+  <!-- ------------------------------------------------ FICHA ------------------------------------------------ -->
+  <div class="ficha-card">
+    <img src="ficha.jpg">
+
+    <div class="ficha-title">
+      𝄖 ｡   #𝘽𝙇𝙐𝙀 𝙇𝙊𝘾𝙆 𝙋𝙍𝙊𝙅𝙀𝘾𝙏 — 
+      ᯓ⚽︎ 𝙎𝙏𝘼𝙏𝙎 ㈱꯭
+    </div>
+
+    <div class="ficha-info">
+      ⟢ 𝙉𝙤𝙢𝙗𝙧𝙚: <b>Samuel Rosinante</b><br>
+      ⟢ 𝙀𝙙𝙖𝙙: <b>17 años</b>
+    </div>
+
+    <!-- STATS DEFINITIVAS -->
+    <div class="stat"><span>Pase</span><div class="bar"><div class="fill" style="--value:59;"></div></div><span class="num">59</span></div>
+    <div class="stat"><span>Tiro</span><div class="bar"><div class="fill" style="--value:18;"></div></div><span class="num">18</span></div>
+    <div class="stat"><span>Físico</span><div class="bar"><div class="fill" style="--value:140;"></div></div><span class="num">140</span></div>
+    <div class="stat"><span>Regate</span><div class="bar"><div class="fill" style="--value:81;"></div></div><span class="num">81</span></div>
+    <div class="stat"><span>Defensa</span><div class="bar"><div class="fill" style="--value:103;"></div></div><span class="num">103</span></div>
+    <div class="stat"><span>Velocidad</span><div class="bar"><div class="fill" style="--value:107;"></div></div><span class="num">107</span></div>
+
+  </div>
+
+  <!-- ------------------------------------------------ BOTON DE MUSICA ------------------------------------------------ -->
+  <button class="music-btn" id="music-btn">Reproducir</button>
+  <audio id="music" src="Yan Block 444.mp3"></audio>
+
+  <!-- ------------------------------------------------ COLUMNAS ------------------------------------------------ -->
+  <div class="columns">
+
+    <div class="column">
+      <img src="reo.jpg">
+      <h3>Reo Mikage U20</h3>
+      <p>
+EDICIÓN DE BLUE LOCK ELEVEN VS SUB 20 DE JAPÓN
+
+Estilo y Adaptación del Camaleón de Reo Mikage
+
+Legendario
+
+(Pasiva de Estilo – Pase)
+
+Eres un jugador nacido para adaptarse al entorno que te rodea. Tu talento radica en la versatilidad absoluta, capaz de ocupar cualquier zona del campo con total soltura, analizando cada jugada con tu conciencia espacial y traduciéndose en decisiones efectivas que elevan la fluidez del equipo. No importa si es defensa, centrocampista o delantero, todo se te da bien. Gracias a tu visión de campo avanzada y lectura del juego, tus estadísticas base se ven potenciadas por una conciencia espacial otorgando un aumento pasivo de +5 puntos en todas tus estadísticas. Tu control del juego te permite distribuir y desequilibrar con precisión quirúrgica, por lo que Pase y Regate se ven aumentados en +11 puntos inicialmente. Tiro, Defensa, Físico y Velocidad se ven aumentados en +8 puntos. Como efecto acumulable, cada vez que venzas en un duelo (con o sin ruleta), Pase y Regate aumentan en +6 puntos hasta 3 veces. Además, reduces -13 puntos en defensa enemiga en encuentros de Pase vs Defensa y Regate vs Defensa una vez ganes la acumulable máximo. Tus pases pueden tomar curvatura libre sin alterar su precisión, y al ejecutar pases a larga distancia, solo sufres un 35% de reducción por distancia, a diferencia del 50% convencional. Pero lo que te vuelve verdaderamente letal es tu capacidad de replicar jugadas ajenas: Tienes la habilidad de copiar cualquier jugada de otro jugador dentro del campo (ya sea una jugada de Genio, de alto rendimiento o estilo único) y reproducirla perfectamente, ganando +5 puntos en la estadística central que la jugada representa (ya sea Pase, Tiro, Defensa, Regate, Físico o Velocidad). Este aumento permanece indefinidamente, pero no puedes volver a replicar una jugada para seguir acumulando la misma estadística. Sin embargo, puedes repetir el proceso en otra categoría distinta (por ejemplo, primero en Tiro, luego en Defensa). Aunque tu capacidad de réplica tiene sus límites: no puedes copiar pasivas ni jugadas exclusivas de jugadores del New Gen Eleven, si copias una de Velocidad o Físico arriesgas lesión con una ruleta. Sin embargo, tienes la capacidad para adaptarte al estilo salvaje y explosivo del demonio Ryusei Shidou, la técnica precisa, control absoluto de Seishiro Nagi o tiros con efecto de Kenyu Yukimiya, así como las capacidades defensivas de un jugador de categoría primera división como Oliver Aiku.
+
+Camaleón
+
+Una habilidad que representa tu naturaleza adaptable, capaz de cambiar de rol en cualquier momento del partido. Con esta habilidad puedes copiar y utilizar una pasiva activa dentro del campo (ya sea de un aliado o enemigo), manteniéndola sólo durante la jugada (un post). Puedes copiar todo tipo de pasivas, sin importar si son de tipo ofensivo, defensivo o mixtas. Como ventaja única por tu acondicionamiento físico superior, si una pasiva contiene características de Físico o Velocidad a ruletas de riesgo (como probabilidad de lesión), esa ruleta se ajusta automáticamente a 80% de no lesión y 20% de lesión.
+
+Ejecución
+
+Para activar esta habilidad, debes redactar claramente qué pasiva copias (con nombre y fuente), usarla de forma contextual dentro de tu jugada, y hacer referencia explícita al uso de la habilidad como Camaleón. Tras la ejecución, no tiene cooldown, solo las habilidades de las pasivas que copias respetando su tiempo de enfriamiento de las habilidades usadas.
+
+Gyro Shot – Estilo del Camaleón
+
+Un disparo con efecto que cambia de trayectoria y se caracteriza por su precisión, a pesar de ser un tiro curvo no tan violento comparado a otros con estas características. La elevación que toma aparenta desviarse de la portería aparentando que se va fuera, sin embargo desciende repentinamente entrando en la red reduciendo un -8 en la estadística del portero. Si un rival interviene en la trayectoria del tiro es forzado a Tiro vs Defensa con reducción de -20% en la estadística de tu oponente.
+
+Ejecución
+
+Debes redactar como ejecutas el tiro con efecto que desciende en curva hacía la portería pareciendo que se va fuera, tienes que hacer mención de Gyro Shot – Estilo del Camaleón esperando 7 turnos globales de Cooldown una vez lo uses.
+
+Control Absorbente x Despeje Giratorio – Estilo del Camaleón
+
+Una técnica que redefine lo imposible: convertir un rechazo, un mal pase, o incluso una posición incómoda en una oportunidad brillante. El dominio del cuerpo y la técnica se fusionan para realizar un giro perfecto en el aire o el suelo, conectando con el balón en un disparo/pase giratorio que transforma en control absorbente. Has copiado con maestría el talento inhumano del control perfecto y la improvisación total, mediante esta habilidad anulas el enfrentamiento en un balón suelto, rechace o pase. Mediante un giro técnico y estético, golpeas el balón sin importar el momento logrando mantener la fluidez y precisión de la jugada. Ya sea para asistir o despejar con elegancia, esta técnica convierte el terreno en una plataforma para la creatividad pura. Tu aumenta en +6 puntos en Pase al momento de usar esta habilidad hasta 2 veces como efecto acumulable. La dirección del pase puede adquirir efecto curvado o flotante a los 15m de distancia. Si tu equipo recupera el balón tras tu acción, ganan un bono temporal de +5 en Tiro, Pase y Regate durante esa misma jugada. La defensa que busque interceptar se ven forzados a -20% con duelo Defensa vs Pase.
+
+Ejecución
+
+Para utilizar Control Absorbente x Despeje Giratorio – Estilo del Camaleón, debes narrar una jugada donde el balón te llegue en un ángulo o situación incómoda y tú, con elegancia y dominio técnico, conectes con él mediante un giro parcial o completo para transformar la situación. La acción puede ser usada como pase o tiro (dependiendo del contexto), y se debe hacer mención directa al uso de la habilidad. Una vez usada, la habilidad entra en su cooldown de 7 turnos globales.
+
+Defensa Asfixiante – Estilo Camaleón
+
+Has absorbido el instinto de un defensor que no da respiro. Esta técnica representa el dominio total de la presión corporal y el cierre de espacios al punto de eliminar por completo las rutas del rival. Tu cuerpo se convierte en una serpiente asfixiando su presa como una sombra que persigue y encierra a su presa, obligando a Regate vs Defensa, Tiro Vs Defensa o Defensa vs Pase, depende lo que se requiera el post. No se trata de quitar el balón directamente, sino de sofocar la libertad del atacante: niegas el pase, el giro y el espacio, ejecutando un marcaje tan ajustado que corta el oxígeno de la jugada sin hacer contacto. Tienes +12 puntos en Defensa y +10 en Físico mientras mantengas una marca asfixiante durante el enfrentamiento. Durante este enfrentamiento, si el rival no logra desmarcarse o ejecutar su acción con claridad, se le aplica una reducción de -20 puntos en la estadística que utilice (Regate, Pase o Tiro), siempre que tu narración muestra cómo reducir su margen de ejecución. Si el rival pierde la ruleta forzada de Regate vs Defensa o Pase vs Defensa o Tiro vs Defensa, obtienes un aumento temporal de +6 puntos en Pase o Regate (a elección) para la siguiente jugada ofensiva que realices.
+
+Ejecución
+
+Para activar Defensa Asfixiante – Estilo Camaleón, tu narración debe reflejar un marcaje pegajoso, constante, sin dejar espacio para respirar. No buscas robar el balón en un solo movimiento, sino presionar con el cuerpo, cerrar líneas, negar la recepción y limitar el accionar del rival. Debe mencionarse el uso de la habilidad y detallar cómo ejecutas la presión. Tras su uso la habilidad entra en cooldown de 7 turnos globales.
+
+Movimiento de flujo
+
+Dragon Drive Shot – Estilo del Camaleón
+
+Este disparo no sigue patrones ni estructura, no es elegante, es salvaje, brutal y completamente egoísta. Una técnica creada por el deseo de romper la red sin importar el método. Mediante tu estilo adaptable, réplicas a la perfección el instinto animal contenido en un disparo inhumano: una patada desmedida donde la violencia y la precisión se combinan en una sola ejecución. Tu cuerpo toma la postura de una bestia, forzando el disparo como si tu pierna fuera una lanza viva. Tus músculos se tensan, tu visión se estrecha, y en ese instante, todo lo que no sea portería deja de existir. Has copiado el estilo ofensivo de una criatura salvaje que no piensa en fallar. Tu Tiro aumenta en +10 puntos al activar esta habilidad. La reducción de la Defensa del rival se reduce en -25% puntos durante el enfrentamiento y es forzado a Tiro vs Defensa.
+
+Ejecución
+
+Debes hacer mención del uso de la habilidad en un balón que este rechazado o en pleno aire para hacer referencia a Tiro Dragón – Estilo del Camaleón rematando con un disparo feroz. Esta habilidad tiene 8 turnos globales de Cooldown.
+      </p>
+    </div>
+
+    <div class="column">
+      <img src="oliver.jpg">
+      <h3>Oliver Aiku</h3>
+      <p>
+EDICIÓN PARTIDO SUB-20
+
+Estilo policiaco de Oliver Aiku
+
+Legendario
+
+(Estilo)
+
+Guiado por los deseos de tus maestros la flor en tu interior que añoraba sus propios deseos fue arrancada de raíz. Dispuesto a cobrar venganza te estableciste una nueva meta, destruir a todos esos delanteros que fueron regados y nutridos por sus entrenadores. A menudo a los delanteros se les compara con ladrones al robarse la gloria, para destruirles te convertiste en un policía que los encarcela antes de que lo logren asfixiando sus jugadas como si fueses una serpiente. Comienzas con +5 puntos en todas tus estadísticas, tu riguroso entrenamiento hizo de ti un jugador muy completo en casi todas las áreas. Aunque eres un jugador que tiene sus parametros básicos equilibrados tu entrenamiento te ha dotado de una habilidad defensiva de primera categoria por lo que tú defensa se ve aumentada +15 puntos inicialmente, está claro que tú habilidad no se estanca durante el partido, cada vez que tienes un encuentro de defensa vs Pase/Tiro/Regate y salgas victorioso(con o sin ruleta) tu defensa aumenta en +5 puntos hasta un máximo de 3 veces (+15). Tu físico también es un arma bien pulida, como un oficial que paso un riguroso entrenamiento para enlistarse teniendo +12 de fisico pudiendo retener y marcar físicamente sin temor a ser dejado en el suelo por tener un cuerpo inadecuado. Aunque no eres el arquetipo de jugador veloz tampoco eres una tortuga en movimiento, tus piernas reciben una bonificación de +9 en velocidad y +8 en pase para finalizar tu estilo defensivo. Un extra es que al estar dentro del área chica de tu portería tu velocidad y defensa aumentan 8% como consecuencia a tu protección de los tres palos sin estar en la posición de portero.
+
+Meta-Vision base × filosofía policiaca
+
+Meta vision, habilidad pasiva creada para exponer tus máximas capacidades como defensor, funciona de la siguiente manera; Al inicio de alguna jugada debes observar todos tus ángulos para atrapar información importante agudizando tus sentidos en un nuevo circuito y proceso cerebral más preciso al predecir las jugadas enemigas llevando tu juego a una nueva dimensión casa que inspecciónas con la mirada el campo, teniendo que observar cada ángulo para tomar esa información y potenciar tus capacidades. La meta vision imperfecta te otorga +5 en todas las estadísticas sin excepción.
+
+Ejecucion
+
+Para hacer un uso correcto de "Meta vision × Filosofía policiaca" debe redactarse la inspección del campo donde atrapas información de todos los angulos posibles para posteriormente hacer referencia al nombre de la habilidad dentro del post. No posee cooldown.
+
+Defensa de la serpiente
+
+No te limitas a marcajes o persecusiónes sin sentido, tu cazas las jugadas más audaces de tus rivales dejandolos tener una sensación prematura de victoria antes de que tú aparezcas para encerrar a ese montón de ladrones. El funcionamiento de esta habilidad es despejar tiros/pases de larga distancia con un cabezazo limpio que terminará por enviar el balón a una dirección escogida anulando el encuentro defensa vs Pase/Tiro que naturalmente se generaría demostrando tu presencia como un muro inamovible en el campo.
+
+Ejecución
+
+Para hacer uso correcto de "Defensa de la serpiente" debe redactarse tu ubicación en el campo de forma específica además de hacer referencia en tu post a la habilidad, está habilidad no te permite conservar el balón, además, enviar el esferico a una locación escogida no debe confundirse con un pase puedes elegir a dónde enviarlo pero se considera balón suelto hasta que alguien lo recoja. Cooldown de 6 turnos propios.
+
+¡Estás en mi jurisdicción!
+
+Como el oficial de policía que eres tienes el deber de patrullar tu territorio para borrar todas las posibles amenazas que quieran surgir. Está habilidad te permite matar los dispar de los rivales desde cerca de forma inesperada al rechazar el balón de cualquier forma legal anulando el encuentro en el mismo momento, esto solo aplica para pasivas menores a primera división, para pasivas mayores se aplica una ruleta de defensa vs tiro con una reducción del 25% a la estadística rival.
+
+Ejecución
+
+Debe redactarse el uso de "¡Estás en mi jurisdicción!" Y la forma en la que bloqueas el disparo, después de eso la habilidad entrara en un enfriamiento de 4 turnos propios.
+
+¡Atualizacion de datos!
+
+Eres un jugador intelectual, notas de inmediato las fortalezas y debilidades de tus rivales cuando los enfrentas, dentro de tu cerebro se conserva una basa de datos que procesa la información en tiempo real para mostrarte la elección más probable del jugador durante el encuentro. Está habilidad funciona en dos pasos: Primero debe tener se un enfrentamiento de cualquier tipo con el rival, tras eso sí se da una segundo duelo puedes hacer uso de "¡Actualizacion de datos!" Para tener una red de información sobre las fortalezas y debilidades del rival reduciendo un 18% de la estadística con la que te quiera enfrentar incluso si su pasiva es irreducible, manteniendo está reducción durante el resto del partido cada vez que se enfrenten.
+
+Ejecución
+
+Para hacer uso de "Actualización de datos" primero debe haberse dado un encuentro, la estadística que se haya usado para ello no es relevante, una vez cumplido ese requisito puedes hacer uso de la habilidad durante el segundo choque, en caso de hacer uso de la habilidad durante el primer encuentro no se toma como válida. Cooldown de 4 turnos globales.
+
+Movimiento especial en estado de flujo
+
+¡Bet all!
+
+Una última defensa, una apuesta de vida o muerte y tú estarás en el centro de todo esto. Cuando todo aparece perdido tu gran análisis en el campo sale a relucir, forzando tus capacidades más allá del límite estás dispuesto a morir con tal de defender la jugada. La funcionalidad de esta habilidad es la siguiente; Cuando ya cumpliste el requisito de "¡Actualización de datos!" Y eres superado por tu rival tienes una última oportunidad de volver al trabajo de forma inmediata forzando una ruleta con probabilidad 50/50 ¿Estadísticas? Pierden importancia cuando el oficial está en pleno arresto, si sales victorioso de la ruleta puedes someter inmediatamente a tu oponente generando un rechace del balón que queda suelto en una dirección aleatoria. En el instante en el que se deba ir a recuperar el balón tus aliados ven aumentada su Estadística de velocidad un 10% al estar alerta y confiar en tu habilidad defensiva para recuperar el balón.
+
+Ejecución
+
+Para hacer uso adecuado de "¡Bet all!" Deben haberse cumplido los requisitos de "¡Actualización de datos!" Y redactar una acción contra tu rival tras ser superado y hacer válido el uso de "¡Bet all!" Haciendo referencia a la habilidad dentro del post.
+
+¡Yo también tengo corazón de delantero!
+
+Un acto de rebeldía o tal vez de redención hacia ese niño pequeño cuyo más grande anhelo fue arrancado sin piedad por los entrenadores del equipo. Ese ego que estaba profundamente dormido en tu interior ha despertado y luchará hasta el final con tal de no extinguirse. Está habilidad te permite desaparecer de la visión de todos dándote libertad para moverte por el campo como un delantero obteniendo +10 en tiro, velocidad y físico durante la jugada. Al finalizar con un tiro desatas un cañonazo que reduce 5% la estadistica de todas las opciones de la ruleta de gol.
+
+Ejecución
+
+Debe redactarse el avance y el remate en la jugada para hacer válido el uso de "¡Yo también tengo corazón de delantero!" Para posteriormente ser inutilizable por el resto del partido.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ------------------------------------------------ SCRIPT ------------------------------------------------ -->
+<script>
+// ------------------------ LOADER PORCENTAJE ------------------------
+let percent = 0;
+let interval = setInterval(()=>{
+  percent++;
+  document.getElementById("loader-percent").innerText = percent + "%";
+  if(percent >= 100){
+    clearInterval(interval);
+    setTimeout(()=>{
+      document.getElementById("loader-screen").style.opacity = "0";
+      setTimeout(()=>{
+        document.getElementById("loader-screen").style.display = "none";
+      },600);
+    },300);
+  }
+},30);
+
+// ------------------------ MUSICA ------------------------
+const music = document.getElementById("music");
+const btn = document.getElementById("music-btn");
+
+btn.addEventListener("click", ()=>{
+  if(music.paused){
+    music.play();
+    btn.textContent = "Pausar";
+  } else {
+    music.pause();
+    btn.textContent = "Reproducir";
+  }
+});
+</script>
+
+</body>
+</html>
